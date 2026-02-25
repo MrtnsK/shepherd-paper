@@ -1,0 +1,18 @@
+name: Shepherd
+version: 1.5.2
+main: com.kurb.shepherd.Shepherd
+api-version: 1.21
+description: Control villagers with the Shepherd's Staff
+authors: [kurb]
+commands:
+  shepherd:
+    description: Shepherd admin commands
+    usage: /shepherd <unlink|link|give <staff|charge>>
+    permission: shepherd.admin
+permissions:
+  shepherd.use:
+    description: Allows using the Shepherd's Staff in-game (link, redirect, unlink via staff)
+    default: true
+  shepherd.admin:
+    description: Allows admin commands (/shepherd link, unlink, give)
+    default: op
