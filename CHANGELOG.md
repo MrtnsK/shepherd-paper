@@ -1,5 +1,12 @@
 # Shepherd — Changelog
 
+## v1.5.3
+
+**Bug fixes**
+
+- Freeze mid-air au redirect (bis) : suppression du snap téléport ; si `!isOnGround()` au moment du redirect, une wait-task attend l'atterrissage naturel (timeout 3s) avant de lancer `moveTo()`. Le runnable de monitoring n'incrémente `noPathTicks` que si `isOnGround()`, évitant de freeze le villageois en chute libre d'une falaise
+- Villageois tourne en rond à destination : ajout d'un check de proximité dans le runnable (`distance <= 0.8 blocs`) ; freeze immédiat dès que le villageois est assez proche, sans attendre que `hasPath()` passe à false
+
 ## v1.5.2
 **Bug fixes**
 - Intermittent mid-air freeze : le compteur `noPathTicks` exige 2 checks consécutifs sans chemin avant de freeze, évitant les faux-négatifs de `hasPath()` pendant une recalculation

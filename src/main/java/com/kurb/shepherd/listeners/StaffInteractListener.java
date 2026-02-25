@@ -162,32 +162,53 @@ public class StaffInteractListener implements Listener {
 
         // Re-enable AI so the navigation system can tick
         villager.setAI(true);
+        cancelPathTask(villager.getUniqueId());
 
-        // If the villager was frozen mid-air, snap it down to the nearest solid ground
+        player.sendMessage("§e[Shepherd] Villager is on its way!");
+        villager.getWorld().playSound(villager.getLocation(), Sound.ENTITY_VILLAGER_WORK_FARMER, 1.0f, 1.0f);
+
+        // If the villager is mid-air (e.g. was frozen in the air), wait for it to land
+        // before issuing moveTo — avoids pathfinding failure from a floating position.
         if (!villager.isOnGround()) {
-            Location loc = villager.getLocation();
-            Location groundCheck = loc.clone();
-            while (groundCheck.getY() > loc.getWorld().getMinHeight()) {
-                groundCheck.subtract(0, 1, 0);
-                if (groundCheck.getBlock().getType().isSolid()) {
-                    Location groundLoc = groundCheck.clone().add(0, 1, 0);
-                    groundLoc.setYaw(loc.getYaw());
-                    groundLoc.setPitch(loc.getPitch());
-                    villager.teleport(groundLoc);
-                    break;
+            BukkitTask waitTask = new BukkitRunnable() {
+                int waitTicks = 0;
+
+                @Override
+                public void run() {
+                    if (!villager.isValid()) {
+                        plugin.activePathTasks.remove(villager.getUniqueId());
+                        cancel();
+                        return;
+                    }
+                    waitTicks += 2;
+                    if (waitTicks > 60) { // 3-second timeout
+                        villager.setAI(false);
+                        plugin.activePathTasks.remove(villager.getUniqueId());
+                        cancel();
+                        return;
+                    }
+                    if (villager.isOnGround()) {
+                        plugin.activePathTasks.remove(villager.getUniqueId());
+                        cancel();
+                        startPathfinding(plugin, player, villager, targetLocation, speed);
+                    }
                 }
-            }
+            }.runTaskTimer(plugin, 2L, 2L);
+            plugin.activePathTasks.put(villager.getUniqueId(), waitTask);
+            return;
         }
 
+        startPathfinding(plugin, player, villager, targetLocation, speed);
+    }
+
+    private void startPathfinding(Shepherd plugin, Player player, Villager villager, Location targetLocation, double speed) {
         boolean pathFound = villager.getPathfinder().moveTo(targetLocation, speed);
         if (!pathFound) {
-            villager.setAI(false); // re-freeze since we're not moving
+            villager.setAI(false);
             player.sendMessage("§c[Shepherd] The villager can't reach that location.");
             return;
         }
 
-        // Schedule a task to re-freeze the villager once it arrives
-        cancelPathTask(villager.getUniqueId());
         BukkitTask task = new BukkitRunnable() {
             int noPathTicks = 0;
 
@@ -198,24 +219,34 @@ public class StaffInteractListener implements Listener {
                     cancel();
                     return;
                 }
+                // Proximity freeze: if the villager is close enough, freeze immediately
+                // instead of waiting for hasPath()=false (fixes circling-at-destination bug).
+                if (villager.getLocation().distance(targetLocation) <= 0.8) {
+                    villager.setAI(false);
+                    plugin.activePathTasks.remove(villager.getUniqueId());
+                    cancel();
+                    return;
+                }
                 if (!villager.getPathfinder().hasPath()) {
-                    noPathTicks++;
-                    // Require 2 consecutive no-path ticks to avoid reacting to brief
-                    // hasPath()=false gaps during pathfinder recalculation (bug: freeze mid-air)
-                    if (noPathTicks >= 2) {
-                        villager.setAI(false);
-                        plugin.activePathTasks.remove(villager.getUniqueId());
-                        if (villager.getLocation().distance(targetLocation) > 3.0) {
-                            String ownerStr = villager.getPersistentDataContainer()
-                                    .get(Shepherd.KEY_OWNER, PersistentDataType.STRING);
-                            if (ownerStr != null) {
-                                Player owner = Bukkit.getPlayer(UUID.fromString(ownerStr));
-                                if (owner != null) {
-                                    owner.sendMessage("§c[Shepherd] Your villager couldn't reach the destination.");
+                    // Only count no-path ticks while on the ground — a villager falling off
+                    // a ledge will briefly lose its path; freezing it mid-air would look wrong.
+                    if (villager.isOnGround()) {
+                        noPathTicks++;
+                        if (noPathTicks >= 2) {
+                            villager.setAI(false);
+                            plugin.activePathTasks.remove(villager.getUniqueId());
+                            if (villager.getLocation().distance(targetLocation) > 3.0) {
+                                String ownerStr = villager.getPersistentDataContainer()
+                                        .get(Shepherd.KEY_OWNER, PersistentDataType.STRING);
+                                if (ownerStr != null) {
+                                    Player owner = Bukkit.getPlayer(UUID.fromString(ownerStr));
+                                    if (owner != null) {
+                                        owner.sendMessage("§c[Shepherd] Your villager couldn't reach the destination.");
+                                    }
                                 }
                             }
+                            cancel();
                         }
-                        cancel();
                     }
                 } else {
                     noPathTicks = 0;
@@ -226,9 +257,6 @@ public class StaffInteractListener implements Listener {
             }
         }.runTaskTimer(plugin, 2L, 2L);
         plugin.activePathTasks.put(villager.getUniqueId(), task);
-
-        player.sendMessage("§e[Shepherd] Villager is on its way!");
-        villager.getWorld().playSound(villager.getLocation(), Sound.ENTITY_VILLAGER_WORK_FARMER, 1.0f, 1.0f);
     }
 
     // -------------------------------------------------------------------------

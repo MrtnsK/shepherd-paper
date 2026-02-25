@@ -2,11 +2,25 @@
 
 <!-- markdownlint-disable MD024 -->
 
-## v1.6.0 — Claude's turn
+## v1.6.0
 
 ### Bug
 
-(aucun trouvé)
+- [ ]  la charge provoque quand même du feu au sol, il faudrait la désactiver.
+
+### Improvement
+
+### Notes
+
+---
+
+## v1.5.3
+
+### Bug
+
+- [x] **Freeze mid-air lors d'un redirect** — le teleport-snap était trop agressif. Fix : suppression du teleport ; si `!isOnGround()` au moment du redirect, on attend l'atterrissage naturel (task toutes les 2 ticks, timeout 3s) avant d'appeler `moveTo`. De plus, dans le runnable de monitoring, `noPathTicks` n'est incrémenté que si `isOnGround()` — évite de freeze le villageois en pleine chute d'une falaise.
+
+- [x] **Villageois tourne en rond à destination** — le pathfinder peut rester `hasPath()=true` même quand le villageois est sur la case cible. Fix : check de proximité dans le runnable (`distance <= 1.5 blocs`) → freeze immédiat sans attendre que `hasPath()` passe à false.
 
 ### Improvement
 
