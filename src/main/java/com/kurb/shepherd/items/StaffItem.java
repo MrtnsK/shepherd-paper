@@ -32,6 +32,7 @@ public class StaffItem {
                         .decoration(TextDecoration.ITALIC, false)
         ));
         meta.setMaxStackSize(1);
+        meta.setCustomModelData(1001);
         meta.getPersistentDataContainer().set(Shepherd.KEY_STAFF, PersistentDataType.BYTE, (byte) 1);
         item.setItemMeta(meta);
         return item;
