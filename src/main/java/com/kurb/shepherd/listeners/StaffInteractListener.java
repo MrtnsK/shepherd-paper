@@ -52,6 +52,16 @@ public class StaffInteractListener implements Listener {
     }
 
     @EventHandler
+    public void onInteractWithCharge(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) return;
+        ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
+        if (!ChargeItem.isCharge(item)) return;
+        // Cancel vanilla fire_charge behaviour (launches a fireball that ignites blocks)
+        event.setCancelled(true);
+    }
+
+    @EventHandler
     public void onInteractBlock(PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
@@ -221,7 +231,7 @@ public class StaffInteractListener implements Listener {
                 }
                 // Proximity freeze: if the villager is close enough, freeze immediately
                 // instead of waiting for hasPath()=false (fixes circling-at-destination bug).
-                if (villager.getLocation().distance(targetLocation) <= 0.8) {
+                if (villager.getLocation().distance(targetLocation) <= 0.9) {
                     villager.setAI(false);
                     plugin.activePathTasks.remove(villager.getUniqueId());
                     cancel();

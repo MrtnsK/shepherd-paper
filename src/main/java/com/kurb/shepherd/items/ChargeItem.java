@@ -26,6 +26,7 @@ public class ChargeItem {
         ));
         meta.setMaxStackSize(1);
         meta.getPersistentDataContainer().set(Shepherd.KEY_CHARGE, PersistentDataType.BYTE, (byte) 1);
+        meta.setCustomModelData(1002);
         item.setItemMeta(meta);
         return item;
     }

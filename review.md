@@ -6,7 +6,17 @@
 
 ### Bug
 
-- [ ]  la charge provoque quand même du feu au sol, il faudrait la désactiver.
+### Improvement
+
+### Notes
+
+---
+
+## v1.5.4
+
+### Bug
+
+- [x] **Shepherd Charge met le feu au sol** — le right-click vanilla sur une fire_charge lance un projectile qui peut enflammer les blocs. Fix : nouveau `@EventHandler onInteractWithCharge` dans `StaffInteractListener` qui annule tout `RIGHT_CLICK_BLOCK` / `RIGHT_CLICK_AIR` avec une Shepherd Charge en main.
 
 ### Improvement
 

@@ -1,9 +1,0 @@
-com\kurb\shepherd\listeners\VillagerDeathListener.class
-com\kurb\shepherd\items\ChargeItem.class
-com\kurb\shepherd\Shepherd.class
-com\kurb\shepherd\listeners\StaffInteractListener.class
-com\kurb\shepherd\items\StaffItem.class
-com\kurb\shepherd\listeners\StaffInteractListener$2.class
-com\kurb\shepherd\commands\ShepherdCommand.class
-com\kurb\shepherd\managers\RecipeManager.class
-com\kurb\shepherd\listeners\StaffInteractListener$1.class
