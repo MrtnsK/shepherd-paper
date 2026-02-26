@@ -1,0 +1,19 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "minecraft:custom_model_data",
+    "entries": [
+      {
+        "threshold": 1002,
+        "model": {
+          "type": "minecraft:model",
+          "model": "minecraft:item/shepherd_charge"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/fire_charge"
+    }
+  }
+}

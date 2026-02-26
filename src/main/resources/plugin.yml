@@ -1,5 +1,5 @@
 name: Shepherd
-version: 1.5.3
+version: 1.5.4
 main: com.kurb.shepherd.Shepherd
 api-version: 1.21
 description: Control villagers with the Shepherd's Staff

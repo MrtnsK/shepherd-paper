@@ -1,7 +1,0 @@
-# Shepherd Configuration
-
-# Movement speed of the villager when redirected (1.0 = normal walk speed)
-speed: 1.0
-
-# Maximum 2D distance (in blocks) between the player and the villager to allow a redirect
-max-distance: 20
