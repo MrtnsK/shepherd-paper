@@ -1,5 +1,5 @@
 name: Shepherd
-version: 1.5.4
+version: 1.5.5
 main: com.kurb.shepherd.Shepherd
 api-version: 1.21
 description: Control villagers with the Shepherd's Staff
@@ -7,7 +7,7 @@ authors: [kurb]
 commands:
   shepherd:
     description: Shepherd admin commands
-    usage: /shepherd <unlink|link|give <staff|charge>>
+    usage: /shepherd <reload|unlink|link|give <staff|charge>>
     permission: shepherd.admin
 permissions:
   shepherd.use:

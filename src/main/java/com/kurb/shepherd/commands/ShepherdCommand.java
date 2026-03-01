@@ -24,18 +24,24 @@ public class ShepherdCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cThis command can only be used by players.");
-            return true;
-        }
-
-        if (!player.hasPermission("shepherd.admin")) {
-            player.sendMessage("§c[Shepherd] You don't have permission to use this command.");
+        if (!sender.hasPermission("shepherd.admin")) {
+            sender.sendMessage("§c[Shepherd] You don't have permission to use this command.");
             return true;
         }
 
         if (args.length == 0) {
-            player.sendMessage("§e[Shepherd] Usage: /shepherd <unlink|link|give <staff|charge>>");
+            sender.sendMessage("§e[Shepherd] Usage: /shepherd <reload|unlink|link|give <staff|charge>>");
+            return true;
+        }
+
+        if (args[0].equalsIgnoreCase("reload")) {
+            JavaPlugin.getPlugin(Shepherd.class).reloadConfig();
+            sender.sendMessage("§a[Shepherd] Config reloaded.");
+            return true;
+        }
+
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("§cThis command can only be used by players.");
             return true;
         }
 
@@ -49,7 +55,7 @@ public class ShepherdCommand implements CommandExecutor, TabCompleter {
                 }
                 handleGive(player, args[1]);
             }
-            default -> player.sendMessage("§e[Shepherd] Usage: /shepherd <unlink|link|give <staff|charge>>");
+            default -> player.sendMessage("§e[Shepherd] Usage: /shepherd <reload|unlink|link|give <staff|charge>>");
         }
         return true;
     }
@@ -144,7 +150,7 @@ public class ShepherdCommand implements CommandExecutor, TabCompleter {
         if (!sender.hasPermission("shepherd.admin")) return List.of();
 
         if (args.length == 1) {
-            return List.of("link", "unlink", "give").stream()
+            return List.of("reload", "link", "unlink", "give").stream()
                     .filter(s -> s.startsWith(args[0].toLowerCase()))
                     .toList();
         }

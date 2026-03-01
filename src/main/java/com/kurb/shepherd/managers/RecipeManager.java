@@ -25,6 +25,7 @@ public class RecipeManager {
         //      -       | redstone torch |     -
         //      -       |    diamond     |     -
         NamespacedKey key = new NamespacedKey(plugin, "staff_recipe");
+        plugin.getServer().removeRecipe(key);
         ShapedRecipe recipe = new ShapedRecipe(key, StaffItem.create());
         recipe.shape("CAG", " T ", " D ");
         recipe.setIngredient('C', Material.COPPER_INGOT);
@@ -40,6 +41,7 @@ public class RecipeManager {
         //    carrot    |  redstone dust |   carrot
         //      -       |       -        |     -
         NamespacedKey key = new NamespacedKey(plugin, "charge_recipe");
+        plugin.getServer().removeRecipe(key);
         ShapedRecipe recipe = new ShapedRecipe(key, ChargeItem.create());
         recipe.shape(" A ", "CRC", "   ");
         recipe.setIngredient('A', Material.AMETHYST_SHARD);
