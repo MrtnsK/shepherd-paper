@@ -38,6 +38,8 @@ public class Shepherd extends JavaPlugin {
     public void onDisable() {
         activePathTasks.values().forEach(BukkitTask::cancel);
         activePathTasks.clear();
+        getServer().removeRecipe(new NamespacedKey(this, "staff_recipe"));
+        getServer().removeRecipe(new NamespacedKey(this, "charge_recipe"));
         getLogger().info("Shepherd disabled.");
     }
 }
