@@ -100,6 +100,6 @@ git push origin "$TAG"
 blue "Creating GitHub release..."
 gh release create "$TAG" "$JAR" "$RESOURCEPACK" \
   --title "$TAG" \
-  --notes "Release ${TAG}"
+  --generate-notes
 
 green "Done! Release $TAG published."
