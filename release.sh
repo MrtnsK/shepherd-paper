@@ -62,9 +62,6 @@ read -rp "Proceed with release $TAG ? [y/N] " CONFIRM
 blue "Updating pom.xml..."
 mvn versions:set -DnewVersion="$NEW_VERSION" -DgenerateBackupPoms=false -q
 
-blue "Updating plugin.yml..."
-sed -i '' "s/^version: .*/version: \"${NEW_VERSION}\"/" src/main/resources/plugin.yml
-
 # ─── Build ────────────────────────────────────────────────────────────────────
 blue "Building JAR and resource pack..."
 mvn package -q
@@ -86,7 +83,7 @@ green "Resource pack built: $RESOURCEPACK"
 
 # ─── Commit & tag ─────────────────────────────────────────────────────────────
 blue "Committing version bump..."
-git add pom.xml src/main/resources/plugin.yml
+git add pom.xml
 git commit -m "chore: release ${TAG}"
 
 blue "Creating tag $TAG..."
