@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build
 
-Maven 3.9+ is installed via Chocolatey. Java 21 is at `C:/Program Files/Java/jdk-21/`.
+Targets **Paper 26.2** (`paper-api 26.2.build.112-stable`). Requires **JDK 25+** — Paper 26.x ships class file version 69, so a Java 21 toolchain cannot read it. Maven 3.9+ with a JDK 25 or newer as its `JAVA_HOME`.
 
 ```bash
 mvn package          # produces target/Shepherd-<version>.jar
@@ -14,11 +14,13 @@ mvn clean package    # clean build
 
 The output JAR is named `Shepherd-${project.version}` (set in `pom.xml`). Drop it into a Paper server's `plugins/` folder to test.
 
+`mvn package` also builds `target/Shepherd-<version>-resourcepack.zip` from `shepherd_pack/` via `src/assembly/resourcepack.xml`.
+
 No tests exist in this project.
 
 ## Architecture
 
-This is a **Paper 1.21.11** Minecraft plugin. The main class `Shepherd.java` is the entry point and shared state holder.
+This is a **Paper 26.2** Minecraft plugin. The main class `Shepherd.java` is the entry point and shared state holder.
 
 ### PDC Key constants (defined in `Shepherd.java`)
 
@@ -60,5 +62,5 @@ Both `PlayerInteractEntityEvent` and `PlayerInteractEvent` guard against off-han
 
 `review.md` tracks versioned feedback between the user and Claude. Format:
 - User tests in-game and fills in the current version's `### Bug` / `### Improvement` sections
-- Claude implements the changes, checks off completed items `[x]`, bumps the version in `pom.xml` and `plugin.yml` is NOT version-tagged (stays `1.0.0`), adds the next version template with Claude's own suggestions at the top of the file
+- Claude implements the changes, checks off completed items `[x]`, bumps the version in `pom.xml` (the single source of truth — `plugin.yml` carries `${project.version}` and follows automatically via Maven resource filtering), adds the next version template with Claude's own suggestions at the top of the file
 - The file uses `<!-- markdownlint-disable MD024 -->` to allow repeated section headings across versions

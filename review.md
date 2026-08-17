@@ -2,6 +2,20 @@
 
 <!-- markdownlint-disable MD024 -->
 
+## v1.7.0
+
+### Bug
+
+### Improvement
+
+### Notes
+
+- Bump vers Paper/Minecraft 26.2 : `paper-api 26.2.build.112-stable`, `api-version: '26.2'`, compilation Java 25. Aucune API utilisée par le plugin n'a disparu — build vert sans modification de code.
+- `setCustomModelData(Integer)` est désormais déprécié (`StaffItem.java:35`, `ChargeItem.java:29`) au profit de `setCustomModelDataComponent`. Toujours fonctionnel, et le pack lit cette valeur via `range_dispatch` sur `minecraft:custom_model_data` — migration à prévoir dans une version ultérieure.
+- À tester en jeu : affichage des modèles custom du bâton et de la charge (validation du nouveau `pack.mcmeta`), puis le cycle link / redirect / unlink.
+
+---
+
 ## v1.6.0
 
 ### Bug

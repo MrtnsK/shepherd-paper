@@ -2,6 +2,19 @@
 
 <!-- markdownlint-disable MD024 -->
 
+## v1.7.0
+
+### Improvements
+
+- Support de Paper/Minecraft 26.2 : `paper-api` passe de `1.21.11-R0.1-SNAPSHOT` à `26.2.build.112-stable` (Paper a changé de schéma de versionnage après 1.21.11), `api-version` passe à `26.2`
+- Compilation en Java 25, requis par les class files de Paper 26.x (bytecode 69)
+- `pack.mcmeta` migré vers `min_format` / `max_format` (l'ancien `pack_format` est remplacé depuis 25w31a) ; la borne basse passe à 46 (1.21.4), premier format supportant les item definitions `range_dispatch` déjà utilisées par le pack
+- `release.sh` accepte `current` pour publier la version déjà présente dans `pom.xml` sans la bumper
+
+### Breaking
+
+- Le plugin ne fonctionne plus sur les serveurs 1.21.x — rester en v1.6.0 pour ces versions
+
 ## v1.5.4
 
 ### Bug fixes

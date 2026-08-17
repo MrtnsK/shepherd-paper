@@ -5,6 +5,7 @@ set -euo pipefail
 # ./release.sh           → bumps patch  (1.0.0 → 1.0.1)
 # ./release.sh minor     → bumps minor  (1.0.0 → 1.1.0)
 # ./release.sh major     → bumps major  (1.0.0 → 2.0.0)
+# ./release.sh current   → releases the version already set in pom.xml (no bump)
 #
 # Requires: gh CLI (brew install gh) authenticated via `gh auth login`
 # ──────────────────────────────────────────────────────────────────────────────
@@ -42,11 +43,12 @@ blue "Current version: $CURRENT"
 IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
 
 case "$BUMP" in
-  major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
-  minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
-  patch) PATCH=$((PATCH + 1)) ;;
+  major)   MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+  minor)   MINOR=$((MINOR + 1)); PATCH=0 ;;
+  patch)   PATCH=$((PATCH + 1)) ;;
+  current) ;;
   *)
-    red "Error: invalid bump type '$BUMP'. Use major, minor, or patch."
+    red "Error: invalid bump type '$BUMP'. Use major, minor, patch, or current."
     exit 1
     ;;
 esac
@@ -55,12 +57,21 @@ NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
 TAG="v${NEW_VERSION}"
 blue "New version:     $NEW_VERSION"
 
+if git rev-parse -q --verify "refs/tags/$TAG" &>/dev/null; then
+  red "Error: tag $TAG already exists."
+  exit 1
+fi
+
 read -rp "Proceed with release $TAG ? [y/N] " CONFIRM
 [[ "$CONFIRM" =~ ^[Yy]$ ]] || { echo "Aborted."; exit 0; }
 
 # ─── Update versions ──────────────────────────────────────────────────────────
-blue "Updating pom.xml..."
-mvn versions:set -DnewVersion="$NEW_VERSION" -DgenerateBackupPoms=false -q
+if [[ "$BUMP" == "current" ]]; then
+  blue "Keeping pom.xml at $NEW_VERSION (no bump)."
+else
+  blue "Updating pom.xml..."
+  mvn versions:set -DnewVersion="$NEW_VERSION" -DgenerateBackupPoms=false -q
+fi
 
 # ─── Build ────────────────────────────────────────────────────────────────────
 blue "Building JAR and resource pack..."
@@ -82,9 +93,13 @@ fi
 green "Resource pack built: $RESOURCEPACK"
 
 # ─── Commit & tag ─────────────────────────────────────────────────────────────
-blue "Committing version bump..."
-git add pom.xml
-git commit -m "chore: release ${TAG}"
+if [[ -n "$(git status --porcelain)" ]]; then
+  blue "Committing version bump..."
+  git add pom.xml
+  git commit -m "chore: release ${TAG}"
+else
+  blue "Nothing to commit, tagging current HEAD."
+fi
 
 blue "Creating tag $TAG..."
 git tag -a "$TAG" -m "Release ${TAG}"
