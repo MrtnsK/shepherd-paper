@@ -2,6 +2,20 @@
 
 <!-- markdownlint-disable MD024 -->
 
+## v1.8.0
+
+### Bug
+
+### Improvement
+
+### Notes
+
+- Le resource pack embarque désormais aussi le pack LifeStealZ (cœurs `nether_star` / totem, particules du totem invisibles). À tester en jeu : modèles des cœurs LifeStealZ et du totem en plus du bâton / de la charge Shepherd.
+- Le pack LifeStealZ fait pointer `heart.json` vers la texture `medium_heart` et inversement — repris tel quel depuis le pack officiel.
+- Si un jour LifeStealZ change de matériau pour ses items (config), il faudra ajouter l'item definition correspondante dans `shepherd_pack/assets/minecraft/items/`.
+
+---
+
 ## v1.7.0
 
 ### Bug

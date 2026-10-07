@@ -2,6 +2,13 @@
 
 <!-- markdownlint-disable MD024 -->
 
+## v1.8.0
+
+### Improvements
+
+- Resource pack fusionné avec le pack officiel LifeStealZ : un seul zip servi par le serveur couvre le bâton / la charge Shepherd et les cœurs / totem LifeStealZ (`nether_star`, `totem_of_undying`, particules du totem masquées). Aucun conflit de fichiers entre les deux packs
+- `pack.png` du pack LifeStealZ repris comme icône, description du `pack.mcmeta` mise à jour (crédits LifeStealZ : abb3v, MDP)
+
 ## v1.7.0
 
 ### Improvements
